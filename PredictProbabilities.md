@@ -12,10 +12,10 @@ $Y_{ij} = 1$ indicates home birth and $Y_{ij} = 0$ indicates facility birth.
 The fitted mixed-effects logistic regression model is
 
 $$
-\operatorname{logit}\!\left[ P(Y_{ij} = 1) \right]
-\;=\;
+\mathrm{logit}\!\left( P(Y_{ij} = 1) \right)
+=
 \eta_{ij}
-\;=\;
+=
 \mathbf{x}_{ij}^{\top} \boldsymbol{\beta} + u_j,
 $$
 
@@ -56,7 +56,7 @@ where $a_{\min}$ and $a_{\max}$ are the minimum and maximum observed ANC visits 
 Because ANC visits were standardized before model fitting, raw grid values are converted to standardized units:
 
 $$
-z(a) \;=\; \frac{a - \mu_{\text{ANC}}}{s_{\text{ANC}}},
+z(a) = \frac{a - \mu_{\text{ANC}}}{s_{\text{ANC}}},
 $$
 
 where $\mu_{\text{ANC}}$ and $s_{\text{ANC}}$ are the mean and standard deviation of ANC visits in the analytic dataset.
@@ -73,7 +73,7 @@ Let $\mathbf{x}_i(a)$ denote the covariate vector for individual $i$, with:
 The fixed-effect linear predictor for individual $i$ at ANC value $a$ is:
 
 $$
-\eta_i(a) \;=\; \mathbf{x}_i(a)^{\top} \boldsymbol{\beta}.
+\eta_i(a) = \mathbf{x}_i(a)^{\top} \boldsymbol{\beta}.
 $$
 
 This corresponds to **marginal standardization** (predictive margins), because predictions are averaged over the empirical distribution of all other covariates.
@@ -86,9 +86,9 @@ To obtain population-averaged probabilities, predictions are marginalized over t
 
 $$
 P_i(a)
-\;=\;
+=
 \mathbb{E}_{u}\!\left[
-\operatorname{logit}^{-1}\!\left( \eta_i(a) + u \right)
+\mathrm{logit}^{-1}\!\left( \eta_i(a) + u \right)
 \right],
 \quad
 u \sim \mathcal{N}(0, \sigma^2).
@@ -113,15 +113,15 @@ $$
 
 $$
 p_i^{(k)}(a)
-\;=\;
-\operatorname{logit}^{-1}\!\left( \eta_i(a) + u^{(k)} \right).
+=
+\mathrm{logit}^{-1}\!\left( \eta_i(a) + u^{(k)} \right).
 $$
 
 3. Average across draws:
 
 $$
 \widehat{P}_i(a)
-\;=\;
+=
 \frac{1}{K} \sum_{k=1}^{K} p_i^{(k)}(a).
 $$
 
@@ -133,7 +133,7 @@ The predicted probability for ANC value $a$ is then obtained by averaging across
 
 $$
 \widehat{P}(a)
-\;=\;
+=
 \frac{1}{N} \sum_{i=1}^{N} \widehat{P}_i(a).
 $$
 
@@ -191,7 +191,7 @@ Pointwise 95% confidence intervals are then obtained as:
 
 $$
 \text{CI}_{0.95}(a)
-\;=\;
+=
 \left[
 \text{quantile}_{0.025}\!\left\{ \widehat{P}^{(b)}(a) \right\},
 \;
@@ -211,3 +211,4 @@ Predicted probabilities of home birth are:
 - accompanied by simulation-based confidence intervals that account for uncertainty in both fixed and random effects.
 
 This approach yields interpretable risk curves that reflect both individual-level predictors and residual between-site heterogeneity.
+
