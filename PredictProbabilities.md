@@ -6,26 +6,20 @@ This document describes how predicted probabilities of home birth were generated
 
 ## 1. Model framework
 
-Let $Y_{ij}$ denote the binary outcome for woman $i$ at outreach site $j$, where  
-$Y_{ij} = 1$ indicates home birth and $Y_{ij} = 0$ indicates facility birth.
+Let `Y_ij` denote the binary outcome for woman `i` at outreach site `j`, where  
+`Y_ij = 1` indicates home birth and `Y_ij = 0` indicates facility birth.
 
-The fitted mixed-effects logistic regression model is
+The fitted mixed-effects logistic regression model is:
 
-$$
-\text{logit}\!\left( P(Y_{ij} = 1) \right)
-=
-\eta_{ij}
-=
-x_{ij}^{T}\beta + u_j,
-$$
+    logit( P(Y_ij = 1) ) = η_ij = x_ij^T β + u_j
 
 where:
 
-- $x_{ij}$ is the vector of fixed-effect covariates for woman $i$ at site $j$  
+- `x_ij` is the vector of fixed-effect covariates for woman `i` at site `j`
   (including number of ANC visits, gestational age at enrollment, parity indicator, and other covariates),
-- $\beta$ is the vector of fixed-effect coefficients,
-- $u_j \sim N(0, \sigma^2)$ is the site-level random intercept,
-- $\sigma^2$ is the estimated between-site variance.
+- `β` is the vector of fixed-effect coefficients,
+- `u_j ~ Normal(0, σ^2)` is the site-level random intercept,
+- `σ^2` is the estimated between-site variance.
 
 ---
 
@@ -35,46 +29,40 @@ We aim to estimate the **population-averaged predicted probability** of home bir
 
 Predictions are generated:
 
-- across the observed range of ANC visits,  
-- for the full population,  
+- across the observed range of ANC visits,
+- for the full population,
 - and stratified by parity (primiparous vs multiparous).
 
 ---
 
 ## 3. ANC visit grid and standardization
 
-Let $a$ denote a raw ANC visit value.
+Let `a` denote a raw ANC visit value.
 
 Predictions are generated on a grid:
 
-$$
-a \in \{ a_{\min}, a_{\min}+1, \dots, a_{\max} \},
-$$
+    a ∈ {a_min, a_min + 1, ..., a_max}
 
-where $a_{\min}$ and $a_{\max}$ are the minimum and maximum observed ANC visits among analytic rows used in model fitting.
+where `a_min` and `a_max` are the minimum and maximum observed ANC visits among analytic rows used in model fitting.
 
 Because ANC visits were standardized before model fitting, raw grid values are converted to standardized units:
 
-$$
-z(a) = \frac{a - \mu_{\text{ANC}}}{s_{\text{ANC}}},
-$$
+    z(a) = (a - μ_ANC) / s_ANC
 
-where $\mu_{\text{ANC}}$ and $s_{\text{ANC}}$ are the mean and standard deviation of ANC visits in the analytic dataset.
+where `μ_ANC` and `s_ANC` are the mean and standard deviation of ANC visits in the analytic dataset.
 
 ---
 
 ## 4. Marginal standardization over covariates
 
-Let $x_i(a)$ denote the covariate vector for individual $i$, with:
+Let `x_i(a)` denote the covariate vector for individual `i`, with:
 
-- the ANC component replaced by $z(a)$,  
+- the ANC component replaced by `z(a)`,
 - all other covariates held at their observed values.
 
-The fixed-effect linear predictor for individual $i$ at ANC value $a$ is:
+The fixed-effect linear predictor for individual `i` at ANC value `a` is:
 
-$$
-\eta_i(a) = x_i(a)^{T}\beta.
-$$
+    η_i(a) = x_i(a)^T β
 
 This corresponds to **marginal standardization** (predictive margins), because predictions are averaged over the empirical distribution of all other covariates.
 
@@ -84,15 +72,7 @@ This corresponds to **marginal standardization** (predictive margins), because p
 
 To obtain population-averaged probabilities, predictions are marginalized over the random intercept:
 
-$$
-P_i(a)
-=
-E_{u}\!\left[
-\text{logit}^{-1}\!\left( \eta_i(a) + u \right)
-\right],
-\quad
-u \sim N(0, \sigma^2).
-$$
+    P_i(a) = E_u [ logit^{-1}( η_i(a) + u ) ],   u ~ Normal(0, σ^2)
 
 This expectation has no closed-form expression and is approximated by Monte Carlo integration.
 
@@ -100,42 +80,27 @@ This expectation has no closed-form expression and is approximated by Monte Carl
 
 ## 6. Monte Carlo approximation
 
-For each ANC value $a$ and individual $i$:
+For each ANC value `a` and individual `i`:
 
-1. Draw $K$ realizations of the random intercept:
+1. Draw `K` realizations of the random intercept:
 
-$$
-u^{(k)} \sim N(0, \sigma^2),
-\quad k = 1, \dots, K.
-$$
+       u^(k) ~ Normal(0, σ^2),   k = 1, ..., K
 
 2. Compute the predicted probability for each draw:
 
-$$
-p_i^{(k)}(a)
-=
-\text{logit}^{-1}\!\left( \eta_i(a) + u^{(k)} \right).
-$$
+       p_i^(k)(a) = logit^{-1}( η_i(a) + u^(k) )
 
 3. Average across draws:
 
-$$
-\widehat{P}_i(a)
-=
-\frac{1}{K} \sum_{k=1}^{K} p_i^{(k)}(a).
-$$
+       P̂_i(a) = (1/K) * sum_{k=1}^K p_i^(k)(a)
 
 ---
 
 ## 7. Averaging over individuals
 
-The predicted probability for ANC value $a$ is then obtained by averaging across all $N$ individuals in the prediction dataset:
+The predicted probability for ANC value `a` is then obtained by averaging across all `N` individuals in the prediction dataset:
 
-$$
-\widehat{P}(a)
-=
-\frac{1}{N} \sum_{i=1}^{N} \widehat{P}_i(a).
-$$
+    P̂(a) = (1/N) * sum_{i=1}^N P̂_i(a)
 
 This yields a **population-averaged predicted probability curve** for home birth as a function of ANC attendance.
 
@@ -145,7 +110,7 @@ This yields a **population-averaged predicted probability curve** for home birth
 
 To generate parity-specific curves:
 
-- the same procedure is applied using only rows for primiparous women,  
+- the same procedure is applied using only rows for primiparous women,
 - and separately using only rows for multiparous women.
 
 All covariates other than ANC visits are again held at their observed values within each subgroup.
@@ -156,8 +121,8 @@ All covariates other than ANC visits are again held at their observed values wit
 
 Uncertainty in predicted probabilities is quantified by jointly propagating uncertainty in:
 
-- the fixed-effect coefficients $\beta$, and  
-- the site-level random-intercept variance $\sigma^2$.
+- the fixed-effect coefficients `β`, and
+- the site-level random-intercept variance `σ^2`.
 
 ---
 
@@ -165,39 +130,31 @@ Uncertainty in predicted probabilities is quantified by jointly propagating unce
 
 Fixed-effect coefficients are drawn from a multivariate normal distribution:
 
-$$
-\beta^{(b)} \sim
-N\!\left( \beta, \; V_{\beta} \right),
-$$
+    β^(b) ~ Normal( β, V_β )
 
-where $V_{\beta}$ is the estimated variance–covariance matrix of $\beta$.
+where `V_β` is the estimated variance–covariance matrix of `β`.
 
 ---
 
 ### 9.2 Random-effect uncertainty
 
-When available, uncertainty in the site-level standard deviation $\sigma$ is approximated by drawing from a log-normal distribution calibrated to the profile-likelihood confidence interval for $\sigma$. When a valid profile interval cannot be obtained, $\sigma$ is held fixed at its maximum-likelihood estimate.
+When available, uncertainty in the site-level standard deviation `σ` is approximated by drawing from a log-normal distribution calibrated to the profile-likelihood confidence interval for `σ`. When a valid profile interval cannot be obtained, `σ` is held fixed at its maximum-likelihood estimate.
 
 ---
 
 ### 9.3 Joint simulation
 
-For each simulation draw $b = 1, \dots, B$:
+For each simulation draw `b = 1, ..., B`:
 
-1. Draw $\beta^{(b)}$ and $\sigma^{(b)}$.  
-2. Recompute predicted probabilities $\widehat{P}^{(b)}(a)$ using the same Monte Carlo marginalization over random effects.  
+1. Draw `β^(b)` and `σ^(b)`.
+2. Recompute predicted probabilities `P̂^(b)(a)` using the same Monte Carlo marginalization over random effects.
 
 Pointwise 95% confidence intervals are then obtained as:
 
-$$
-\text{CI}_{0.95}(a)
-=
-\left[
-\text{quantile}_{0.025}\!\left\{ \widehat{P}^{(b)}(a) \right\},
-\;
-\text{quantile}_{0.975}\!\left\{ \widehat{P}^{(b)}(a) \right\}
-\right].
-$$
+    CI_0.95(a) = [
+      quantile_0.025 { P̂^(b)(a) },
+      quantile_0.975 { P̂^(b)(a) }
+    ]
 
 ---
 
@@ -205,9 +162,9 @@ $$
 
 Predicted probabilities of home birth are:
 
-- population-averaged with respect to outreach-site effects,  
-- standardized over the empirical distribution of all other covariates,  
-- generated across the observed range of ANC visits, and  
+- population-averaged with respect to outreach-site effects,
+- standardized over the empirical distribution of all other covariates,
+- generated across the observed range of ANC visits, and
 - accompanied by simulation-based confidence intervals that account for uncertainty in both fixed and random effects.
 
 This approach yields interpretable risk curves that reflect both individual-level predictors and residual between-site heterogeneity.
