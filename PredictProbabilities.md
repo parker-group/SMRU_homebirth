@@ -12,19 +12,19 @@ $Y_{ij} = 1$ indicates home birth and $Y_{ij} = 0$ indicates facility birth.
 The fitted mixed-effects logistic regression model is
 
 $$
-\mathrm{logit}\!\left( P(Y_{ij} = 1) \right)
+\text{logit}\!\left( P(Y_{ij} = 1) \right)
 =
 \eta_{ij}
 =
-\mathbf{x}_{ij}^{\top} \boldsymbol{\beta} + u_j,
+x_{ij}^{T}\beta + u_j,
 $$
 
 where:
 
-- $\mathbf{x}_{ij}$ is the vector of fixed-effect covariates for woman $i$ at site $j$  
+- $x_{ij}$ is the vector of fixed-effect covariates for woman $i$ at site $j$  
   (including number of ANC visits, gestational age at enrollment, parity indicator, and other covariates),
-- $\boldsymbol{\beta}$ is the vector of fixed-effect coefficients,
-- $u_j \sim \mathcal{N}(0, \sigma^2)$ is the site-level random intercept,
+- $\beta$ is the vector of fixed-effect coefficients,
+- $u_j \sim N(0, \sigma^2)$ is the site-level random intercept,
 - $\sigma^2$ is the estimated between-site variance.
 
 ---
@@ -65,7 +65,7 @@ where $\mu_{\text{ANC}}$ and $s_{\text{ANC}}$ are the mean and standard deviatio
 
 ## 4. Marginal standardization over covariates
 
-Let $\mathbf{x}_i(a)$ denote the covariate vector for individual $i$, with:
+Let $x_i(a)$ denote the covariate vector for individual $i$, with:
 
 - the ANC component replaced by $z(a)$,  
 - all other covariates held at their observed values.
@@ -73,7 +73,7 @@ Let $\mathbf{x}_i(a)$ denote the covariate vector for individual $i$, with:
 The fixed-effect linear predictor for individual $i$ at ANC value $a$ is:
 
 $$
-\eta_i(a) = \mathbf{x}_i(a)^{\top} \boldsymbol{\beta}.
+\eta_i(a) = x_i(a)^{T}\beta.
 $$
 
 This corresponds to **marginal standardization** (predictive margins), because predictions are averaged over the empirical distribution of all other covariates.
@@ -87,11 +87,11 @@ To obtain population-averaged probabilities, predictions are marginalized over t
 $$
 P_i(a)
 =
-\mathbb{E}_{u}\!\left[
-\mathrm{logit}^{-1}\!\left( \eta_i(a) + u \right)
+E_{u}\!\left[
+\text{logit}^{-1}\!\left( \eta_i(a) + u \right)
 \right],
 \quad
-u \sim \mathcal{N}(0, \sigma^2).
+u \sim N(0, \sigma^2).
 $$
 
 This expectation has no closed-form expression and is approximated by Monte Carlo integration.
@@ -105,7 +105,7 @@ For each ANC value $a$ and individual $i$:
 1. Draw $K$ realizations of the random intercept:
 
 $$
-u^{(k)} \sim \mathcal{N}(0, \sigma^2),
+u^{(k)} \sim N(0, \sigma^2),
 \quad k = 1, \dots, K.
 $$
 
@@ -114,7 +114,7 @@ $$
 $$
 p_i^{(k)}(a)
 =
-\mathrm{logit}^{-1}\!\left( \eta_i(a) + u^{(k)} \right).
+\text{logit}^{-1}\!\left( \eta_i(a) + u^{(k)} \right).
 $$
 
 3. Average across draws:
@@ -156,7 +156,7 @@ All covariates other than ANC visits are again held at their observed values wit
 
 Uncertainty in predicted probabilities is quantified by jointly propagating uncertainty in:
 
-- the fixed-effect coefficients $\boldsymbol{\beta}$, and  
+- the fixed-effect coefficients $\beta$, and  
 - the site-level random-intercept variance $\sigma^2$.
 
 ---
@@ -166,11 +166,11 @@ Uncertainty in predicted probabilities is quantified by jointly propagating unce
 Fixed-effect coefficients are drawn from a multivariate normal distribution:
 
 $$
-\boldsymbol{\beta}^{(b)} \sim
-\mathcal{N}\!\left( \boldsymbol{\beta}, \; \mathbf{V}_{\boldsymbol{\beta}} \right),
+\beta^{(b)} \sim
+N\!\left( \beta, \; V_{\beta} \right),
 $$
 
-where $\mathbf{V}_{\boldsymbol{\beta}}$ is the estimated variance–covariance matrix of $\boldsymbol{\beta}$.
+where $V_{\beta}$ is the estimated variance–covariance matrix of $\beta$.
 
 ---
 
@@ -184,7 +184,7 @@ When available, uncertainty in the site-level standard deviation $\sigma$ is app
 
 For each simulation draw $b = 1, \dots, B$:
 
-1. Draw $\boldsymbol{\beta}^{(b)}$ and $\sigma^{(b)}$.  
+1. Draw $\beta^{(b)}$ and $\sigma^{(b)}$.  
 2. Recompute predicted probabilities $\widehat{P}^{(b)}(a)$ using the same Monte Carlo marginalization over random effects.  
 
 Pointwise 95% confidence intervals are then obtained as:
@@ -211,4 +211,3 @@ Predicted probabilities of home birth are:
 - accompanied by simulation-based confidence intervals that account for uncertainty in both fixed and random effects.
 
 This approach yields interpretable risk curves that reflect both individual-level predictors and residual between-site heterogeneity.
-
