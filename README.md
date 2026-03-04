@@ -4,6 +4,15 @@ This repository contains the public dataset and analysis code used to generate t
 
 ---
 
+## Figure 1
+
+Predicted probability of home birth by number of antenatal care (ANC) visits, stratified by parity.
+
+<img src="output/figures/Fig1.png" width="650">
+
+---
+
+
 # Repository Structure
 
 ```
