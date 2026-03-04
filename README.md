@@ -1,8 +1,6 @@
 # Homebirth Outcomes in SMRU Clinics
 
-This repository contains the analysis code and public dataset used for the study examining predictors of home birth among women receiving antenatal care in SMRU clinics.
-
-The repository includes the dataset used for the analysis, the full analytical workflow, and code used to generate the results and Figure 1b reported in the manuscript.
+This repository contains the public dataset and analysis code used to generate the results and Figure 1 reported in the manuscript examining predictors of home birth among women receiving antenatal care in SMRU clinics.
 
 ---
 
@@ -40,8 +38,8 @@ This script:
 3. Fits a mixed-effects logistic regression model with a random intercept for clinic (`OR_site`)  
 4. Calculates clustering statistics (variance, MOR, ICC)  
 5. Generates the main results table (descriptive statistics, UOR, AOR)  
-6. Produces predicted probability curves for home birth by number of ANC visits  
-7. Saves Figure 1b to the `output/figures/` directory
+6. Produces predicted probability curves for home birth by number of ANC visits (Figure 1)
+7. Saves Figure 1 to the `output/figures/` directory
 
 Running the script will automatically create output folders if they do not exist.
 
