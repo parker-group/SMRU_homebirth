@@ -24,6 +24,7 @@ SMRU_homebirth/
 │   └── analysis_main.R
 │
 ├── docs/
+│   └── data_dictionary.md
 │
 ├── output/
 │   ├── tables/
@@ -65,7 +66,11 @@ Key identifiers:
 - `ANC_code` – participant identifier
 - `OR_site` – clinic identifier
 
-The dataset contains one row per participant.
+The dataset contains **one row per participant / pregnancy observation**.
+
+A full description of dataset variables is available in the data dictionary:
+
+- [`docs/data_dictionary.md`](docs/data_dictionary.md)
 
 ---
 
