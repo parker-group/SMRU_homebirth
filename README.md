@@ -1,4 +1,4 @@
-# Homebirth Outcomes in SMRU Clinics
+# Homebirth Outcomes in SMRU-BHF Clinics
 
 This repository contains the public dataset and analysis code used to generate the results and Figure 1 reported in the manuscript examining predictors of home birth among women receiving antenatal care in SMRU clinics.
 
