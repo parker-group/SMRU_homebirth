@@ -27,6 +27,6 @@ Each row represents **one participant / pregnancy observation**.
 | `prematureY_N` | Preterm birth indicator (raw categorical coding as provided in the dataset) |
 
 Notes  
-- `ANC_code` and `OR_site` are **pseudonymized identifiers** created for the public dataset.  
-- Additional variables used in the statistical models (e.g., `hi2`, `Age_bin25p`, parity-gated terms) are **constructed within the analysis pipeline** and are not included as columns in the public dataset.  
+- `ANC_code` and `OR_site` are pseudonymized identifiers created for the public dataset.  
+- Additional variables used in the statistical models (e.g., `hi2`, `Age_bin25p`, parity-gated terms) are constructed within the analysis pipeline and are not included as columns in the public dataset.  
 - Derived variables are created in `scripts/analysis_main.R`.
