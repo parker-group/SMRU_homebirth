@@ -21,17 +21,21 @@ where:
 - `u_j ~ Normal(0, σ^2)` is the site-level random intercept,
 - `σ^2` is the estimated between-site variance.
 
+In the implementation the random intercept is represented using its **standard deviation `σ`**.
+
 ---
 
 ## 2. Prediction target
 
-We aim to estimate the **population-averaged predicted probability** of home birth as a function of the number of antenatal care (ANC) visits, marginalizing over outreach-site effects and holding other covariates at their observed values.
+We aim to estimate the **population-averaged predicted probability** of home birth as a function of the number of antenatal care (ANC) visits.
 
 Predictions are generated:
 
 - across the observed range of ANC visits,
-- for the full population,
-- and stratified by parity (primiparous vs multiparous).
+- averaged over the empirical distribution of all other covariates,
+- marginalized over the distribution of outreach-site random effects.
+
+These are therefore **population-averaged predictions**, rather than site-specific conditional predictions.
 
 ---
 
@@ -80,33 +84,28 @@ This expectation has no closed-form expression and is approximated by Monte Carl
 
 ## 6. Monte Carlo approximation
 
-For each ANC value `a` and individual `i`:
+For each ANC value `a`:
 
-1. Draw `K` realizations of the random intercept:
+1. Compute the fixed-effect linear predictors `η_i(a)` for all individuals in the prediction dataset.
+
+2. Draw `K` realizations of the random intercept:
 
        u^(k) ~ Normal(0, σ^2),   k = 1, ..., K
 
-2. Compute the predicted probability for each draw:
+3. Compute predicted probabilities:
 
        p_i^(k)(a) = logit^{-1}( η_i(a) + u^(k) )
 
-3. Average across draws:
+4. Average across individuals and Monte Carlo draws:
 
-       P̂_i(a) = (1/K) * sum_{k=1}^K p_i^(k)(a)
+       P̂(a) = (1 / (N*K)) * sum_i sum_k p_i^(k)(a)
 
----
-
-## 7. Averaging over individuals
-
-The predicted probability for ANC value `a` is then obtained by averaging across all `N` individuals in the prediction dataset:
-
-    P̂(a) = (1/N) * sum_{i=1}^N P̂_i(a)
-
-This yields a **population-averaged predicted probability curve** for home birth as a function of ANC attendance.
+In the implementation this averaging is performed simultaneously by evaluating  
+`logit^{-1}(η_i(a) + u^(k))` across all individuals and Monte Carlo draws and then taking the mean.
 
 ---
 
-## 8. Parity-stratified predictions
+## 7. Parity-stratified predictions
 
 To generate parity-specific curves:
 
@@ -117,32 +116,42 @@ All covariates other than ANC visits are again held at their observed values wit
 
 ---
 
-## 9. Uncertainty estimation
+## 8. Uncertainty estimation
 
-Uncertainty in predicted probabilities is quantified by jointly propagating uncertainty in:
+Uncertainty in predicted probabilities is quantified by propagating uncertainty in:
 
 - the fixed-effect coefficients `β`, and
-- the site-level random-intercept variance `σ^2`.
+- the site-level random-intercept standard deviation `σ`.
 
 ---
 
-### 9.1 Fixed-effect uncertainty
+### 8.1 Fixed-effect uncertainty
 
 Fixed-effect coefficients are drawn from a multivariate normal distribution:
 
-    β^(b) ~ Normal( β, V_β )
+    β^(b) ~ Normal( β_hat , V_β )
 
-where `V_β` is the estimated variance–covariance matrix of `β`.
-
----
-
-### 9.2 Random-effect uncertainty
-
-When available, uncertainty in the site-level standard deviation `σ` is approximated by drawing from a log-normal distribution calibrated to the profile-likelihood confidence interval for `σ`. When a valid profile interval cannot be obtained, `σ` is held fixed at its maximum-likelihood estimate.
+where `V_β` is the estimated variance–covariance matrix of the fixed effects.
 
 ---
 
-### 9.3 Joint simulation
+### 8.2 Random-effect uncertainty
+
+When available, uncertainty in the site-level standard deviation `σ` is incorporated using the profile-likelihood confidence interval for the random-intercept standard deviation.
+
+The implementation assumes that `log(σ)` is approximately normally distributed:
+
+    log(σ) ~ Normal( log(σ_hat), s^2 )
+
+where `s` is derived from the width of the profile confidence interval on the log scale.
+
+Random draws of `σ` are then generated from the corresponding log-normal distribution.
+
+If a valid profile interval cannot be obtained, `σ` is held fixed at its maximum-likelihood estimate.
+
+---
+
+### 8.3 Joint simulation
 
 For each simulation draw `b = 1, ..., B`:
 
@@ -158,7 +167,7 @@ Pointwise 95% confidence intervals are then obtained as:
 
 ---
 
-## 10. Summary
+## 9. Summary
 
 Predicted probabilities of home birth are:
 
@@ -167,4 +176,4 @@ Predicted probabilities of home birth are:
 - generated across the observed range of ANC visits, and
 - accompanied by simulation-based confidence intervals that account for uncertainty in both fixed and random effects.
 
-This approach yields interpretable risk curves that reflect both individual-level predictors and residual between-site heterogeneity.
+This approach yields interpretable probability curves that reflect both individual-level predictors and residual between-site heterogeneity.
