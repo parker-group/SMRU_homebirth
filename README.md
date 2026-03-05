@@ -57,7 +57,7 @@ Running the script will automatically create output folders if they do not exist
 
 # Data
 
-`data/homebirth_analysis.csv`
+[`data/homebirth_analysis.csv`](data/homebirth_analysis.csv)
 
 Public analysis dataset containing pseudonymized participant-level observations.
 
@@ -94,11 +94,9 @@ install.packages(c("lme4","boot","ggplot2","scales","mvtnorm"))
 
 # Running the analysis
 
-From the project root:
+R script for data wrangling and analysis here:
 
-```r
-source("scripts/analysis_main.R")
-```
+- [`scripts/analysis_main.R`](scripts/analysis_main.R)
 
 ---
 
