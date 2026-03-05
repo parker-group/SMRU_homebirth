@@ -21,13 +21,13 @@ where:
 - `u_j ~ Normal(0, σ^2)` is the site-level random intercept,
 - `σ^2` is the estimated between-site variance.
 
-In the implementation the random intercept is represented using its **standard deviation `σ`**.
+In the implementation the random intercept is represented using its standard deviation `σ`.
 
 ---
 
 ## 2. Prediction target
 
-We aim to estimate the **population-averaged predicted probability** of home birth as a function of the number of antenatal care (ANC) visits.
+We aim to estimate the population-averaged predicted probability of home birth as a function of the number of antenatal care (ANC) visits.
 
 Predictions are generated:
 
@@ -35,7 +35,7 @@ Predictions are generated:
 - averaged over the empirical distribution of all other covariates,
 - marginalized over the distribution of outreach-site random effects.
 
-These are therefore **population-averaged predictions**, rather than site-specific conditional predictions.
+These are therefore population-averaged predictions, rather than site-specific conditional predictions.
 
 ---
 
@@ -68,7 +68,7 @@ The fixed-effect linear predictor for individual `i` at ANC value `a` is:
 
     η_i(a) = x_i(a)^T β
 
-This corresponds to **marginal standardization** (predictive margins), because predictions are averaged over the empirical distribution of all other covariates.
+This corresponds to marginal standardization (predictive margins), because predictions are averaged over the empirical distribution of all other covariates.
 
 ---
 
