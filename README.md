@@ -8,7 +8,9 @@ This repository contains the public dataset and analysis code used to generate t
 
 Predicted probability of home birth by number of antenatal care (ANC) visits, stratified by parity.
 
-<img src="output/figures/Fig1.png" width="650">
+<img src="output/figures/Fig1.png"
+     alt="Line chart showing predicted probability of home birth by number of antenatal care visits for primiparous and multiparous women. For both groups, predicted home-birth probability declines steeply as the number of visits increases, with the greatest difference between groups at low visit counts; shaded ribbons show 95% confidence intervals."
+     width="650">
 
 ---
 
